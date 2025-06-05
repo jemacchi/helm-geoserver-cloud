@@ -1,7 +1,7 @@
 apiVersion: v2
 description: A Helm chart for Geoserver-cloud
 name: geoservercloud
-version: 0.1.0
+version: 2.3.7
 dependencies:
   - name: application
     repository: https://camptocamp.github.io/helm-application/
