@@ -1,0 +1,5 @@
+entries:
+  helm-geoserver-cloud:
+    - version: 2.3.6-demo
+      urls:
+        - https://github.com/jemacchi/helm-geoserver-cloud/archive/refs/tags/2.3.6-demo.tar.gz
