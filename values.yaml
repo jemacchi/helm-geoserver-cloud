@@ -181,8 +181,7 @@ geoserver:
   metadata:
     enabled: true
   securityContext:
-    readOnlyRootFilesystem: true
-    allowPrivilegeEscalation: false
+    privileged: true
   ingress:
     enabled: false
     # For example #
