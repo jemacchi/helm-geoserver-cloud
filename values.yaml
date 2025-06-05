@@ -180,8 +180,6 @@ common-generic-stuff: &common-generic-stuff
 geoserver:
   metadata:
     enabled: true
-  securityContext:
-    privileged: true
   ingress:
     enabled: false
     # For example #
