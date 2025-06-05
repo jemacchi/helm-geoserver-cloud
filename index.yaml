@@ -1,5 +1,5 @@
 entries:
   helm-geoserver-cloud:
-    - version: 2.3.6
+    - version: 2.3.7
       urls:
-        - https://github.com/jemacchi/helm-geoserver-cloud/releases/download/2.3.6/geoservercloud-2.3.6.tgz
+        - https://github.com/jemacchi/helm-geoserver-cloud/archive/refs/tags/2.3.7.tar.gz
