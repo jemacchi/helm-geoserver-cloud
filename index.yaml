@@ -1,5 +1,31 @@
+apiVersion: v1
 entries:
-  helm-geoserver-cloud:
-    - version: 2.3.7
-      urls:
-        - https://github.com/jemacchi/helm-geoserver-cloud/archive/refs/tags/2.3.7.tar.gz
+  application:
+  - apiVersion: v2
+    appVersion: "1.0"
+    created: "2025-06-04T23:10:40.80759702-03:00"
+    dependencies:
+    - name: common
+      repository: https://camptocamp.github.io/helm-common
+      version: 2.1.2
+    description: HELM chart that provide everything needed to create a multi pod application.
+    digest: 1a493b99f2d08f3c1133b73b17e289cbb7f4f15d2959ed3a73de8e27fa2c5198
+    name: application
+    urls:
+    - https://jemacchi.github.io/helm-geoserver-cloud/charts/application-2.13.0.tgz
+    version: 2.13.0
+  geoservercloud:
+  - apiVersion: v2
+    created: "2025-06-04T23:10:40.80701755-03:00"
+    dependencies:
+    - alias: geoserver
+      name: application
+      repository: https://camptocamp.github.io/helm-application/
+      version: 2.13.0
+    description: A Helm chart for Geoserver-cloud
+    digest: ba5f8831129135ebc9fb0759550e2899be1080e202b625830f89c745c681b39a
+    name: geoservercloud
+    urls:
+    - https://jemacchi.github.io/helm-geoserver-cloud/geoservercloud-2.3.7.tgz
+    version: 2.3.7
+generated: "2025-06-04T23:10:40.80490312-03:00"
