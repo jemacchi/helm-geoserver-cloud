@@ -9,8 +9,8 @@ metadata:
     app.kubernetes.io/instance: gs-cloud-pgconfig-acl
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: postgresql
-    app.kubernetes.io/version: 16.1.0
-    helm.sh/chart: postgresql-14.0.0
+    app.kubernetes.io/version: 16.3.0
+    helm.sh/chart: postgresql-15.5.2
     app.kubernetes.io/component: primary
 spec:
   podSelector:
@@ -22,65 +22,7 @@ spec:
     - Ingress
     - Egress
   egress:
-    # Allow dns resolution
-    - ports:
-        - port: 53
-          protocol: UDP
-        - port: 53
-          protocol: TCP
-    # Allow outbound connections to read-replicas
-    - ports:
-        - port: 5432
-        - port: 5432
-      to:
-        - podSelector:
-            matchLabels:
-              app.kubernetes.io/instance: gs-cloud-pgconfig-acl
-              app.kubernetes.io/name: postgresql
-              app.kubernetes.io/component: read
-  ingress:
-    - ports:
-        - port: 5432
----
-# Source: gs-cloud-pgconfig/charts/postgresql/templates/read/networkpolicy.yaml
-kind: NetworkPolicy
-apiVersion: networking.k8s.io/v1
-metadata:
-  name: gs-cloud-pgconfig-acl-postgresql-read
-  namespace: "default"
-  labels:
-    app.kubernetes.io/instance: gs-cloud-pgconfig-acl
-    app.kubernetes.io/managed-by: Helm
-    app.kubernetes.io/name: postgresql
-    app.kubernetes.io/version: 16.1.0
-    helm.sh/chart: postgresql-14.0.0
-    app.kubernetes.io/component: read
-spec:
-  podSelector:
-    matchLabels:
-      app.kubernetes.io/instance: gs-cloud-pgconfig-acl
-      app.kubernetes.io/name: postgresql
-      app.kubernetes.io/component: read
-  policyTypes:
-    - Ingress
-    - Egress
-  egress:
-    # Allow dns resolution
-    - ports:
-        - port: 53
-          protocol: UDP
-        - port: 53
-          protocol: TCP
-    # Allow outbound connections to primary
-    - ports:
-        - port: 5432
-        - port: 5432
-      to:
-        - podSelector:
-            matchLabels:
-              app.kubernetes.io/instance: gs-cloud-pgconfig-acl
-              app.kubernetes.io/name: postgresql
-              app.kubernetes.io/component: primary
+    - {}
   ingress:
     - ports:
         - port: 5432
@@ -265,6 +207,27 @@ spec:
       app.kubernetes.io/instance: gs-cloud-pgconfig-acl
       app.kubernetes.io/component: wps
 ---
+# Source: gs-cloud-pgconfig/charts/postgresql/templates/primary/pdb.yaml
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: gs-cloud-pgconfig-acl-postgresql
+  namespace: "default"
+  labels:
+    app.kubernetes.io/instance: gs-cloud-pgconfig-acl
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: postgresql
+    app.kubernetes.io/version: 16.3.0
+    helm.sh/chart: postgresql-15.5.2
+    app.kubernetes.io/component: primary
+spec:
+  maxUnavailable: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: gs-cloud-pgconfig-acl
+      app.kubernetes.io/name: postgresql
+      app.kubernetes.io/component: primary
+---
 # Source: gs-cloud-pgconfig/charts/postgresql/templates/serviceaccount.yaml
 apiVersion: v1
 kind: ServiceAccount
@@ -275,8 +238,8 @@ metadata:
     app.kubernetes.io/instance: gs-cloud-pgconfig-acl
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: postgresql
-    app.kubernetes.io/version: 16.1.0
-    helm.sh/chart: postgresql-14.0.0
+    app.kubernetes.io/version: 16.3.0
+    helm.sh/chart: postgresql-15.5.2
 automountServiceAccountToken: false
 ---
 # Source: gs-cloud-pgconfig/charts/geoservercloud/charts/geoserver/templates/secret-docker-registry.yaml
@@ -305,8 +268,8 @@ metadata:
     app.kubernetes.io/instance: gs-cloud-pgconfig-acl
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: postgresql
-    app.kubernetes.io/version: 16.1.0
-    helm.sh/chart: postgresql-14.0.0
+    app.kubernetes.io/version: 16.3.0
+    helm.sh/chart: postgresql-15.5.2
 type: Opaque
 data:
   postgres-password: "ZzMwczNydjNy"
@@ -343,23 +306,23 @@ data:
   RELEASE_NAME: gs-cloud-pgconfig-acl
   RELEASE_NAMESPACE: default
   SERVICE_ACL_NAME: gs-cloud-pgconfig-acl-gsc-acl
-  SERVICE_ACL_CONTAINER_SPRING_IMAGE_TAG: "2.3.2"
+  SERVICE_ACL_CONTAINER_SPRING_IMAGE_TAG: "3.0.3"
   SERVICE_GATEWAY_NAME: gs-cloud-pgconfig-acl-gsc-gateway
-  SERVICE_GATEWAY_CONTAINER_SPRING_IMAGE_TAG: "2.27.1.0"
+  SERVICE_GATEWAY_CONTAINER_SPRING_IMAGE_TAG: "3.0.2"
   SERVICE_GWC_NAME: gs-cloud-pgconfig-acl-gsc-gwc
-  SERVICE_GWC_CONTAINER_SPRING_IMAGE_TAG: "2.27.1.0"
+  SERVICE_GWC_CONTAINER_SPRING_IMAGE_TAG: "3.0.2"
   SERVICE_REST_NAME: gs-cloud-pgconfig-acl-gsc-rest
-  SERVICE_REST_CONTAINER_SPRING_IMAGE_TAG: "2.27.1.0"
+  SERVICE_REST_CONTAINER_SPRING_IMAGE_TAG: "3.0.2"
   SERVICE_WCS_NAME: gs-cloud-pgconfig-acl-gsc-wcs
-  SERVICE_WCS_CONTAINER_SPRING_IMAGE_TAG: "2.27.1.0"
+  SERVICE_WCS_CONTAINER_SPRING_IMAGE_TAG: "3.0.2"
   SERVICE_WEBUI_NAME: gs-cloud-pgconfig-acl-gsc-webui
-  SERVICE_WEBUI_CONTAINER_SPRING_IMAGE_TAG: "2.27.1.0"
+  SERVICE_WEBUI_CONTAINER_SPRING_IMAGE_TAG: "3.0.2"
   SERVICE_WFS_NAME: gs-cloud-pgconfig-acl-gsc-wfs
-  SERVICE_WFS_CONTAINER_SPRING_IMAGE_TAG: "2.27.1.0"
+  SERVICE_WFS_CONTAINER_SPRING_IMAGE_TAG: "3.0.2"
   SERVICE_WMS_NAME: gs-cloud-pgconfig-acl-gsc-wms
-  SERVICE_WMS_CONTAINER_SPRING_IMAGE_TAG: "2.27.1.0"
+  SERVICE_WMS_CONTAINER_SPRING_IMAGE_TAG: "3.0.2"
   SERVICE_WPS_NAME: gs-cloud-pgconfig-acl-gsc-wps
-  SERVICE_WPS_CONTAINER_SPRING_IMAGE_TAG: "2.27.1.0"
+  SERVICE_WPS_CONTAINER_SPRING_IMAGE_TAG: "3.0.2"
 ---
 # Source: gs-cloud-pgconfig/templates/install-postgis-cm.yml
 apiVersion: v1
@@ -599,8 +562,8 @@ metadata:
     app.kubernetes.io/instance: gs-cloud-pgconfig-acl
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: postgresql
-    app.kubernetes.io/version: 16.1.0
-    helm.sh/chart: postgresql-14.0.0
+    app.kubernetes.io/version: 16.3.0
+    helm.sh/chart: postgresql-15.5.2
     app.kubernetes.io/component: primary
   annotations:
     # Use this annotation in addition to the actual publishNotReadyAddresses
@@ -634,8 +597,8 @@ metadata:
     app.kubernetes.io/instance: gs-cloud-pgconfig-acl
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: postgresql
-    app.kubernetes.io/version: 16.1.0
-    helm.sh/chart: postgresql-14.0.0
+    app.kubernetes.io/version: 16.3.0
+    helm.sh/chart: postgresql-15.5.2
     app.kubernetes.io/component: primary
 spec:
   type: ClusterIP
@@ -689,7 +652,7 @@ spec:
           securityContext:
             allowPrivilegeEscalation: false
             readOnlyRootFilesystem: true
-          image: "geoservercloud/geoserver-acl:2.3.2"
+          image: "geoservercloud/geoserver-acl:3.0.3"
           imagePullPolicy: IfNotPresent
           env:
             - name: "ACL_USERS_ADMIN_PASSWORD"
@@ -801,7 +764,7 @@ spec:
           securityContext:
             allowPrivilegeEscalation: false
             readOnlyRootFilesystem: true
-          image: "geoservercloud/geoserver-cloud-gateway:2.27.1.0"
+          image: "geoservercloud/geoserver-cloud-gateway:3.0.2"
           imagePullPolicy: IfNotPresent
           env:
             - name: "ACL_PASSWORD"
@@ -947,8 +910,6 @@ spec:
               name: vol-local-gscloud
             - mountPath: /mnt/cache
               name: cache
-            - mountPath: /opt/app/data_directory
-              name: datadir
             - mountPath: /tmp/
               name: tmp-empty-dir
 
@@ -976,9 +937,6 @@ spec:
       volumes:
         - name: cache
           emptyDir: {}
-        - name: datadir
-          persistentVolumeClaim:
-            claimName: gs-cloud-datadir-nfs-claim
         - name: tmp-empty-dir
           emptyDir: {}
         - name: vol-local-gscloud
@@ -1022,7 +980,7 @@ spec:
           securityContext:
             allowPrivilegeEscalation: false
             readOnlyRootFilesystem: true
-          image: "geoservercloud/geoserver-cloud-gwc:2.27.1.0"
+          image: "geoservercloud/geoserver-cloud-gwc:3.0.2"
           imagePullPolicy: IfNotPresent
           env:
             - name: "ACL_PASSWORD"
@@ -1168,8 +1126,6 @@ spec:
               name: vol-local-gscloud
             - mountPath: /mnt/cache
               name: cache
-            - mountPath: /opt/app/data_directory
-              name: datadir
             - mountPath: /tmp/
               name: tmp-empty-dir
 
@@ -1197,9 +1153,6 @@ spec:
       volumes:
         - name: cache
           emptyDir: {}
-        - name: datadir
-          persistentVolumeClaim:
-            claimName: gs-cloud-datadir-nfs-claim
         - name: tmp-empty-dir
           emptyDir: {}
         - name: vol-local-gscloud
@@ -1244,7 +1197,7 @@ spec:
           securityContext:
             allowPrivilegeEscalation: false
             readOnlyRootFilesystem: true
-          image: "geoservercloud/geoserver-cloud-rest:2.27.1.0"
+          image: "geoservercloud/geoserver-cloud-rest:3.0.2"
           imagePullPolicy: IfNotPresent
           env:
             - name: "ACL_PASSWORD"
@@ -1390,8 +1343,6 @@ spec:
               name: vol-local-gscloud
             - mountPath: /mnt/cache
               name: cache
-            - mountPath: /opt/app/data_directory
-              name: datadir
             - mountPath: /tmp/
               name: tmp-empty-dir
 
@@ -1419,9 +1370,6 @@ spec:
       volumes:
         - name: cache
           emptyDir: {}
-        - name: datadir
-          persistentVolumeClaim:
-            claimName: gs-cloud-datadir-nfs-claim
         - name: tmp-empty-dir
           emptyDir: {}
         - name: vol-local-gscloud
@@ -1466,7 +1414,7 @@ spec:
           securityContext:
             allowPrivilegeEscalation: false
             readOnlyRootFilesystem: true
-          image: "geoservercloud/geoserver-cloud-wcs:2.27.1.0"
+          image: "geoservercloud/geoserver-cloud-wcs:3.0.2"
           imagePullPolicy: IfNotPresent
           env:
             - name: "ACL_PASSWORD"
@@ -1612,8 +1560,6 @@ spec:
               name: vol-local-gscloud
             - mountPath: /mnt/cache
               name: cache
-            - mountPath: /opt/app/data_directory
-              name: datadir
             - mountPath: /tmp/
               name: tmp-empty-dir
 
@@ -1641,9 +1587,6 @@ spec:
       volumes:
         - name: cache
           emptyDir: {}
-        - name: datadir
-          persistentVolumeClaim:
-            claimName: gs-cloud-datadir-nfs-claim
         - name: tmp-empty-dir
           emptyDir: {}
         - name: vol-local-gscloud
@@ -1688,7 +1631,7 @@ spec:
           securityContext:
             allowPrivilegeEscalation: false
             readOnlyRootFilesystem: true
-          image: "geoservercloud/geoserver-cloud-webui:2.27.1.0"
+          image: "geoservercloud/geoserver-cloud-webui:3.0.2"
           imagePullPolicy: IfNotPresent
           env:
             - name: "ACL_PASSWORD"
@@ -1834,8 +1777,6 @@ spec:
               name: vol-local-gscloud
             - mountPath: /mnt/cache
               name: cache
-            - mountPath: /opt/app/data_directory
-              name: datadir
             - mountPath: /tmp/
               name: tmp-empty-dir
 
@@ -1863,9 +1804,6 @@ spec:
       volumes:
         - name: cache
           emptyDir: {}
-        - name: datadir
-          persistentVolumeClaim:
-            claimName: gs-cloud-datadir-nfs-claim
         - name: tmp-empty-dir
           emptyDir: {}
         - name: vol-local-gscloud
@@ -1910,7 +1848,7 @@ spec:
           securityContext:
             allowPrivilegeEscalation: false
             readOnlyRootFilesystem: true
-          image: "geoservercloud/geoserver-cloud-wfs:2.27.1.0"
+          image: "geoservercloud/geoserver-cloud-wfs:3.0.2"
           imagePullPolicy: IfNotPresent
           env:
             - name: "ACL_PASSWORD"
@@ -2056,8 +1994,6 @@ spec:
               name: vol-local-gscloud
             - mountPath: /mnt/cache
               name: cache
-            - mountPath: /opt/app/data_directory
-              name: datadir
             - mountPath: /tmp/
               name: tmp-empty-dir
 
@@ -2085,9 +2021,6 @@ spec:
       volumes:
         - name: cache
           emptyDir: {}
-        - name: datadir
-          persistentVolumeClaim:
-            claimName: gs-cloud-datadir-nfs-claim
         - name: tmp-empty-dir
           emptyDir: {}
         - name: vol-local-gscloud
@@ -2132,7 +2065,7 @@ spec:
           securityContext:
             allowPrivilegeEscalation: false
             readOnlyRootFilesystem: true
-          image: "geoservercloud/geoserver-cloud-wms:2.27.1.0"
+          image: "geoservercloud/geoserver-cloud-wms:3.0.2"
           imagePullPolicy: IfNotPresent
           env:
             - name: "ACL_PASSWORD"
@@ -2278,8 +2211,6 @@ spec:
               name: vol-local-gscloud
             - mountPath: /mnt/cache
               name: cache
-            - mountPath: /opt/app/data_directory
-              name: datadir
             - mountPath: /tmp/
               name: tmp-empty-dir
 
@@ -2307,9 +2238,6 @@ spec:
       volumes:
         - name: cache
           emptyDir: {}
-        - name: datadir
-          persistentVolumeClaim:
-            claimName: gs-cloud-datadir-nfs-claim
         - name: tmp-empty-dir
           emptyDir: {}
         - name: vol-local-gscloud
@@ -2354,7 +2282,7 @@ spec:
           securityContext:
             allowPrivilegeEscalation: false
             readOnlyRootFilesystem: true
-          image: "geoservercloud/geoserver-cloud-wps:2.27.1.0"
+          image: "geoservercloud/geoserver-cloud-wps:3.0.2"
           imagePullPolicy: IfNotPresent
           env:
             - name: "ACL_PASSWORD"
@@ -2500,8 +2428,6 @@ spec:
               name: vol-local-gscloud
             - mountPath: /mnt/cache
               name: cache
-            - mountPath: /opt/app/data_directory
-              name: datadir
             - mountPath: /tmp/
               name: tmp-empty-dir
 
@@ -2529,9 +2455,6 @@ spec:
       volumes:
         - name: cache
           emptyDir: {}
-        - name: datadir
-          persistentVolumeClaim:
-            claimName: gs-cloud-datadir-nfs-claim
         - name: tmp-empty-dir
           emptyDir: {}
         - name: vol-local-gscloud
@@ -2547,8 +2470,8 @@ metadata:
     app.kubernetes.io/instance: gs-cloud-pgconfig-acl
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: postgresql
-    app.kubernetes.io/version: 16.1.0
-    helm.sh/chart: postgresql-14.0.0
+    app.kubernetes.io/version: 16.3.0
+    helm.sh/chart: postgresql-15.5.2
     app.kubernetes.io/component: primary
 spec:
   replicas: 1
@@ -2568,8 +2491,8 @@ spec:
         app.kubernetes.io/instance: gs-cloud-pgconfig-acl
         app.kubernetes.io/managed-by: Helm
         app.kubernetes.io/name: postgresql
-        app.kubernetes.io/version: 16.1.0
-        helm.sh/chart: postgresql-14.0.0
+        app.kubernetes.io/version: 16.3.0
+        helm.sh/chart: postgresql-15.5.2
         app.kubernetes.io/component: primary
     spec:
       serviceAccountName: gs-cloud-pgconfig-acl-postgresql
@@ -2599,7 +2522,7 @@ spec:
       hostIPC: false
       containers:
         - name: postgresql
-          image: docker.io/bitnami/postgresql:16.1.0-debian-11-r25
+          image: docker.io/bitnamilegacy/postgresql:16.3.0-debian-12-r12
           imagePullPolicy: "IfNotPresent"
           securityContext:
             allowPrivilegeEscalation: false
@@ -2607,9 +2530,11 @@ spec:
               drop:
               - ALL
             privileged: false
-            readOnlyRootFilesystem: false
+            readOnlyRootFilesystem: true
+            runAsGroup: 1001
             runAsNonRoot: true
             runAsUser: 1001
+            seLinuxOptions: {}
             seccompProfile:
               type: RuntimeDefault
           env:
@@ -2677,13 +2602,25 @@ spec:
                 - -e
                 - |
                   exec pg_isready -U "postgres" -h 127.0.0.1 -p 5432
-                  [ -f /opt/bitnami/postgresql/tmp/.initialized ] || [ -f /bitnami/postgresql/.initialized ]
           resources:
-            limits: {}
+            limits:
+              cpu: 150m
+              ephemeral-storage: 1024Mi
+              memory: 192Mi
             requests:
-              cpu: 250m
-              memory: 256Mi
+              cpu: 100m
+              ephemeral-storage: 50Mi
+              memory: 128Mi
           volumeMounts:
+            - name: empty-dir
+              mountPath: /tmp
+              subPath: tmp-dir
+            - name: empty-dir
+              mountPath: /opt/bitnami/postgresql/conf
+              subPath: app-conf-dir
+            - name: empty-dir
+              mountPath: /opt/bitnami/postgresql/tmp
+              subPath: app-tmp-dir
             - name: custom-init-scripts
               mountPath: /docker-entrypoint-initdb.d/
             - name: dshm
@@ -2691,6 +2628,8 @@ spec:
             - name: data
               mountPath: /bitnami/postgresql
       volumes:
+        - name: empty-dir
+          emptyDir: {}
         - name: custom-init-scripts
           configMap:
             name: install-postgis-configmap

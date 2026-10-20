@@ -5,6 +5,9 @@ on:
     types:
       - opened
       - reopened
+permissions:
+  contents: read
+
 jobs:
   auto-merge:
     name: Auto reviews pull requests from bots
@@ -48,3 +51,5 @@ jobs:
             })
         if: |-
           github.event.pull_request.user.login == 'renovate[bot]'
+    permissions:
+      pull-requests: write

@@ -10,6 +10,6 @@ dependencies:
   # Postgres dependency used for pgconfig database
   # Note: bitnami postgres chart is updated at initialization to add Postgis extension
   - name: 'postgresql'
-    version: 14.0.0
-    repository: 'https://charts.bitnami.com/bitnami'
+    version: 15.5.2
+    repository: 'oci://ghcr.io/georchestra/bitnami-helm-charts'
     condition: postgresql.enabled

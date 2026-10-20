@@ -3,7 +3,7 @@ podSecurityContext: {}
 securityContext: {}
 
 common-image-stuff: &common-image-stuff
-  tag: '2.27.1.0'
+  tag: '3.0.2'
 
 service: &common-service-definition
   type: ClusterIP
@@ -50,7 +50,7 @@ env: &common-env
     value: '/geoserver-cloud'
   SPRING_PROFILES_ACTIVE:
     # this must be explicitly overridden with either
-    # "standalone,jdbcconfig,kube" or "standalone,datadir,kube"
+    # "standalone,pgconfig,kube" or "standalone,datadir,kube"
     value: not-set
   GWC_ENABLED:
     value: 'true'
@@ -171,8 +171,7 @@ common-generic-stuff: &common-generic-stuff
   template: true
   replicaCount: 1
   nameOverride: 'gsc'
-  initContainers:
-    {}
+  initContainers: {}
     #<<: *common-init-containers
   nodeSelector: {}
   affinity: {}
@@ -393,6 +392,6 @@ geoserver:
             PG_USERNAME:
               value: 'acl'
           image:
-            tag: '2.3.2'
+            tag: '3.0.3'
             repository: geoservercloud/geoserver-acl
             sha: ''
